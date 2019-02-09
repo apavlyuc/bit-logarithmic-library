@@ -22,6 +22,15 @@ public:
 	int			get_accuracy() const noexcept;
 	void		set_accuracy(int accuracy) noexcept;
 
+	BL			&operator=(BL const& bl);
+	BL			operator-() const;
+
+	friend bool	operator<(BL const& num1, BL const& num2);
+	friend BL	operator+(BL const& num1, BL const& num2);
+	friend BL	operator-(BL const& num1, BL const& num2);
+	friend BL	operator*(BL const& num1, BL const& num2);
+	friend BL	operator/(BL const& num1, BL const& num2);
+	
 	operator string() noexcept;
 
 private:
@@ -40,8 +49,3 @@ private:
 	int			_accuracy;
 	bool		_is_num_vector_bl_actual = false;
 };
-
-BL	operator+(BL const& num1, BL const& num2);
-BL	operator-(BL const& num1, BL const& num2);
-BL	operator*(BL const& num1, BL const& num2);
-BL	operator/(BL const& num1, BL const& num2);

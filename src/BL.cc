@@ -64,25 +64,21 @@ BL::BL(BL const& bl)
 }
 
 /*
-**			public functions
+**			public methods
 */
 
 string	BL::get_binary_form() noexcept
 {
-	if (_is_num_str_bin_actual)
-		return std::move(_num_str_bin);
-	
-	actualize_num_str_bin();
+	if (!_is_num_str_bin_actual)	
+		actualize_num_str_bin();
 
 	return std::move(_num_str_bin);
 }
 
 string	BL::get_bl_form() noexcept
 {
-	if (_is_num_str_bl_actual)
-		return std::move(_num_str_bl);
-	
-	actualize_num_str_bl();
+	if (!_is_num_str_bl_actual)
+		actualize_num_str_bl();
 	
 	return std::move(_num_str_bl);
 }
@@ -98,49 +94,164 @@ void	BL::set_accuracy(int accuracy) noexcept
 }
 
 /*
-**			private functions
+**			private methods
 */
 
-void	BL::actualize_num_str_bin() noexcept
+void	BL::actualize_num_str_bin() noexcept // need code
 {
-
+	if (_is_num_str_bin_actual)
+		return;
 }
 
-void	BL::actualize_num_str_bl() noexcept
+void	BL::actualize_num_str_bl() noexcept // need code
 {
-
+	if (_is_num_str_bl_actual)
+		return;
+	
+	if (_is_num_str_bin_actual)
+	{
+		// TODO:
+	}
+	
+	if (_is_num_vector_bl_actual)
+	{
+		// TODO:
+	}
 }
 
-void	BL::actualize_num_vector_bl() noexcept
+void	BL::actualize_num_vector_bl() noexcept // need code
 {
-
+	if (_is_num_vector_bl_actual)
+		return;
 }
 
 /*
 **			operators
 */
 
+bool	operator<(BL const& num1, BL const& num2)
+{
+	const_cast<BL&>(num1).actualize_num_vector_bl();
+	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	// if both num1 and num2 are zero
+	if (num1._accuracy == 0 && num2._accuracy == 0)
+		return false;
+	// if only num1 is zero
+	if (num1._accuracy == 0 && num2._sign == true)
+		return true;
+	// if only num2 is zero
+	if (num1._sign == false && num2._accuracy == 0)
+		return true;
+
+	// if num1 is negative and num2 is positive
+	if (num1._sign == false && num2._sign == true)
+		return true;
+	
+	// if the same sign
+	if (num1._sign == num2._sign)
+	{
+		bool first_powers_comp = num1._num_vector_bl[0] < num2._num_vector_bl[0];
+		return num1._sign && first_powers_comp;
+	}
+
+	return false;
+}
+
+BL	operator+(BL const& num1, BL const& num2) // need code
+{
+	BL ret;
+
+	// actualize values in vector
+	const_cast<BL&>(num1).actualize_num_vector_bl();
+	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	// determinate sign
+	if (num1._sign && num2._sign)
+		ret._sign = true;
+	else if (!num1._sign && !num2._sign)
+		ret._sign = false;
+	else
+	{
+		if (num1._sign)
+			ret._sign = -num2 < num1;
+		else
+			ret._sign = -num1 < num2;
+	}
+
+	// need code here
+	return ret;
+}
+
+BL	operator-(BL const& num1, BL const& num2) // need code
+{
+	BL ret;
+
+	const_cast<BL&>(num1).actualize_num_vector_bl();
+	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	return ret;
+}
+
+BL	operator*(BL const& num1, BL const& num2) // need code
+{
+	BL ret;
+
+	const_cast<BL&>(num1).actualize_num_vector_bl();
+	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	return ret;
+}
+
+BL	operator/(BL const& num1, BL const& num2) // need code
+{
+	BL ret;
+	
+	const_cast<BL&>(num1).actualize_num_vector_bl();
+	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	return ret;
+}
+
+BL	&BL::operator=(BL const& bl)
+{
+	if (this == &bl)
+		return *this;
+	
+	if (bl._is_num_str_bin_actual)
+	{
+		_num_str_bin = bl._num_str_bin;
+		_is_num_str_bin_actual = true;
+	}
+
+	if (bl._is_num_str_bl_actual)
+	{
+		_num_str_bl = bl._num_str_bl;
+		_is_num_str_bl_actual = true;
+	}
+
+	if (bl._is_num_vector_bl_actual)
+	{
+		_num_vector_bl = bl._num_vector_bl;
+		_sign = bl._sign;
+		_accuracy = bl._accuracy;
+		_is_num_vector_bl_actual = true;
+	}
+
+	return *this;
+}
+
+BL	BL::operator-() const
+{
+	BL ret = *this;
+	ret.actualize_num_vector_bl();
+
+	ret._sign = false;
+
+	return ret;
+}
+
 BL::operator string() noexcept
 {
 	return get_bl_form();
-}
-
-BL	operator+(BL const& num1, BL const& num2)
-{
-
-}
-
-BL	operator-(BL const& num1, BL const& num2)
-{
-
-}
-
-BL	operator*(BL const& num1, BL const& num2)
-{
-
-}
-
-BL	operator/(BL const& num1, BL const& num2)
-{
-
 }
