@@ -16,7 +16,17 @@ public:
 	BL(BL const& bl);
 	~BL() = default;
 
+	string		get_binary_form() noexcept;
+	string		get_bl_form() noexcept;
+	
+	int			get_accuracy() const noexcept;
+	void		set_accuracy(int accuracy) noexcept;
+
 private:
+	void		actualize_num_str_bin() noexcept;
+	void		actualize_num_str_bl() noexcept;
+	void		actualize_num_vector_bl() noexcept;
+
 	string		_num_str_bin;
 	bool		_is_num_str_bin_actual = false;
 
