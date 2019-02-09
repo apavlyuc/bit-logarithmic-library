@@ -22,6 +22,8 @@ public:
 	int			get_accuracy() const noexcept;
 	void		set_accuracy(int accuracy) noexcept;
 
+	operator string() noexcept;
+
 private:
 	void		actualize_num_str_bin() noexcept;
 	void		actualize_num_str_bl() noexcept;

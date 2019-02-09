@@ -120,6 +120,11 @@ void	BL::actualize_num_vector_bl() noexcept
 **			operators
 */
 
+BL::operator string() noexcept
+{
+	return get_bl_form();
+}
+
 BL	operator+(BL const& num1, BL const& num2)
 {
 
