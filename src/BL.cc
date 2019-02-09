@@ -4,6 +4,10 @@
 
 using std::to_string;
 
+/*
+**			constructors / destructors
+*/
+
 BL::BL(long long num)
 {
 	_num_str_bin = to_string(num);
@@ -103,6 +107,35 @@ void	BL::actualize_num_str_bin() noexcept
 }
 
 void	BL::actualize_num_str_bl() noexcept
+{
+
+}
+
+void	BL::actualize_num_vector_bl() noexcept
+{
+
+}
+
+/*
+**			operators
+*/
+
+BL	operator+(BL const& num1, BL const& num2)
+{
+
+}
+
+BL	operator-(BL const& num1, BL const& num2)
+{
+
+}
+
+BL	operator*(BL const& num1, BL const& num2)
+{
+
+}
+
+BL	operator/(BL const& num1, BL const& num2)
 {
 
 }

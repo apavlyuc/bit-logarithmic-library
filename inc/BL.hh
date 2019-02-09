@@ -18,7 +18,7 @@ public:
 
 	string		get_binary_form() noexcept;
 	string		get_bl_form() noexcept;
-	
+
 	int			get_accuracy() const noexcept;
 	void		set_accuracy(int accuracy) noexcept;
 
@@ -38,3 +38,8 @@ private:
 	int			_accuracy;
 	bool		_is_num_vector_bl_actual = false;
 };
+
+BL	operator+(BL const& num1, BL const& num2);
+BL	operator-(BL const& num1, BL const& num2);
+BL	operator*(BL const& num1, BL const& num2);
+BL	operator/(BL const& num1, BL const& num2);
