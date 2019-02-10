@@ -1,8 +1,11 @@
 #include "../inc/BL.hh"
 
 #include <utility>
+#include <iterator>
 
 using std::to_string;
+
+static bool	optimise_vector_bl(vector<int>& vec);
 
 /*
 **			constructors / destructors
@@ -158,7 +161,7 @@ bool	operator<(BL const& num1, BL const& num2)
 	return false;
 }
 
-BL	operator+(BL const& num1, BL const& num2) // need code
+BL		operator+(BL const& num1, BL const& num2)
 {
 	BL ret;
 
@@ -166,7 +169,7 @@ BL	operator+(BL const& num1, BL const& num2) // need code
 	const_cast<BL&>(num1).actualize_num_vector_bl();
 	const_cast<BL&>(num2).actualize_num_vector_bl();
 
-	// determinate sign
+	// determine sign
 	if (num1._sign && num2._sign)
 		ret._sign = true;
 	else if (!num1._sign && !num2._sign)
@@ -179,11 +182,17 @@ BL	operator+(BL const& num1, BL const& num2) // need code
 			ret._sign = -num1 < num2;
 	}
 
-	// need code here
+	// insert vector from both nums
+	ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num1._num_vector_bl), std::end(num1._num_vector_bl));
+	ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num2._num_vector_bl), std::end(num2._num_vector_bl));
+
+	// replace each two similar values (x) in vector by one (x + 1)
+	while (optimise_vector_bl(ret._num_vector_bl));
+
 	return ret;
 }
 
-BL	operator-(BL const& num1, BL const& num2) // need code
+BL		operator-(BL const& num1, BL const& num2) // need code
 {
 	BL ret;
 
@@ -193,17 +202,34 @@ BL	operator-(BL const& num1, BL const& num2) // need code
 	return ret;
 }
 
-BL	operator*(BL const& num1, BL const& num2) // need code
+BL		operator*(BL const& num1, BL const& num2)
 {
 	BL ret;
 
+	// actualize values in vector
 	const_cast<BL&>(num1).actualize_num_vector_bl();
 	const_cast<BL&>(num2).actualize_num_vector_bl();
+
+	// determine sign
+	if ((num1._sign && num2._sign) || (!num1._sign && !num2._sign))
+		ret._sign = true;
+	else
+		ret._sign = false;
+
+	// insert vector from both nums
+	for (int n1 : num1._num_vector_bl)
+	{
+		for (int n2 : num2._num_vector_bl)
+			ret._num_vector_bl.push_back(n1 + n2);
+	}
+
+	// replace each two similar values (x) in vector by one (x + 1)
+	while (optimise_vector_bl(ret._num_vector_bl));
 
 	return ret;
 }
 
-BL	operator/(BL const& num1, BL const& num2) // need code
+BL		operator/(BL const& num1, BL const& num2) // need code
 {
 	BL ret;
 	
@@ -213,7 +239,7 @@ BL	operator/(BL const& num1, BL const& num2) // need code
 	return ret;
 }
 
-BL	&BL::operator=(BL const& bl)
+BL		&BL::operator=(BL const& bl)
 {
 	if (this == &bl)
 		return *this;
@@ -241,7 +267,7 @@ BL	&BL::operator=(BL const& bl)
 	return *this;
 }
 
-BL	BL::operator-() const
+BL		BL::operator-() const
 {
 	BL ret = *this;
 	ret.actualize_num_vector_bl();
@@ -254,4 +280,22 @@ BL	BL::operator-() const
 BL::operator string() noexcept
 {
 	return get_bl_form();
+}
+
+/*
+**			functions
+*/
+
+bool	optimise_vector_bl(vector<int>& vec)
+{
+	for (auto it = vec.begin(); it != vec.end(); ++it)
+	{
+		if (*it == *(it + 1))
+		{
+			*it += 1;
+			vec.erase(it + 1);
+			return true;
+		}
+	}
+	return false;
 }
