@@ -1,5 +1,6 @@
 #include "../inc/BL.hh"
 
+#include <cstdlib>
 #include <utility>
 #include <iterator>
 
@@ -104,6 +105,9 @@ void	BL::actualize_num_str_bin() noexcept // need code
 {
 	if (_is_num_str_bin_actual)
 		return;
+	
+	if (!_is_num_vector_bl_actual)
+		actualize_num_vector_bl();
 }
 
 void	BL::actualize_num_str_bl() noexcept // need code
@@ -122,13 +126,41 @@ void	BL::actualize_num_str_bl() noexcept // need code
 	}
 }
 
-void	BL::actualize_num_vector_bl() noexcept // need code
+void	BL::actualize_num_vector_bl() noexcept
 {
 	if (_is_num_vector_bl_actual)
 		return;
-	
+
 	if (!_is_num_str_bl_actual)
 		actualize_num_str_bl();
+
+	// determine sign
+	_sign = _num_str_bl[0] == '0' ? true : false;
+
+	// determine accuracy
+	_accuracy = std::atoi(_num_str_bl.c_str() + 2);
+
+	// _num_str_bl without sign and accuracy
+	string nums_str = _num_str_bl.substr(1 + _num_str_bl.find('.', 2));
+
+	size_t pos = 0;
+	char const *ptr = nullptr;
+	while (true)
+	{
+		ptr = nums_str.c_str() + pos;
+		if (!*ptr) break;
+
+		int number = std::atoi(ptr);
+		_num_vector_bl.push_back(number);
+
+		pos = nums_str.find('.', pos + 1);
+		if (pos == string::npos)
+			break;
+		++pos;
+	}
+
+	// replace each two similar values (x) in vector by one (x + 1)
+	while (optimise_vector_bl(_num_vector_bl));
 }
 
 /*

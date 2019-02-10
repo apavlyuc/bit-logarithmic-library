@@ -31,7 +31,7 @@ public:
 	friend BL	operator-(BL const& num1, BL const& num2);
 	friend BL	operator*(BL const& num1, BL const& num2);
 	friend BL	operator/(BL const& num1, BL const& num2);
-	
+
 	operator string() noexcept;
 
 private:
