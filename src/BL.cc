@@ -126,6 +126,9 @@ void	BL::actualize_num_vector_bl() noexcept // need code
 {
 	if (_is_num_vector_bl_actual)
 		return;
+	
+	if (!_is_num_str_bl_actual)
+		actualize_num_str_bl();
 }
 
 /*
@@ -183,8 +186,13 @@ BL		operator+(BL const& num1, BL const& num2)
 	}
 
 	// insert vector from both nums
-	ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num1._num_vector_bl), std::end(num1._num_vector_bl));
-	ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num2._num_vector_bl), std::end(num2._num_vector_bl));
+	{
+		int len_num1 = num1._accuracy <= num1._num_vector_bl.size() ? num1._accuracy : num1._num_vector_bl.size();
+		int len_num2 = num2._accuracy <= num2._num_vector_bl.size() ? num2._accuracy : num2._num_vector_bl.size();
+
+		ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num1._num_vector_bl), std::begin(num1._num_vector_bl) + len_num1);
+		ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num2._num_vector_bl), std::begin(num2._num_vector_bl) + len_num2);
+	}
 
 	// replace each two similar values (x) in vector by one (x + 1)
 	while (optimise_vector_bl(ret._num_vector_bl));
@@ -217,10 +225,15 @@ BL		operator*(BL const& num1, BL const& num2)
 		ret._sign = false;
 
 	// insert vector from both nums
-	for (int n1 : num1._num_vector_bl)
 	{
-		for (int n2 : num2._num_vector_bl)
-			ret._num_vector_bl.push_back(n1 + n2);
+		int len_num1 = num1._accuracy <= num1._num_vector_bl.size() ? num1._accuracy : num1._num_vector_bl.size();
+		int len_num2 = num2._accuracy <= num2._num_vector_bl.size() ? num2._accuracy : num2._num_vector_bl.size();
+		
+		for (int i = 0; i < len_num1; ++i)
+		{
+			for (int j = 0; i < len_num2; ++j)
+				ret._num_vector_bl.push_back(num1._num_vector_bl[i] + num2._num_vector_bl[j]);
+		}
 	}
 
 	// replace each two similar values (x) in vector by one (x + 1)
@@ -267,7 +280,7 @@ BL		&BL::operator=(BL const& bl)
 	return *this;
 }
 
-BL		BL::operator-() const
+BL		BL::operator-() const noexcept
 {
 	BL ret = *this;
 	ret.actualize_num_vector_bl();
@@ -275,6 +288,11 @@ BL		BL::operator-() const
 	ret._sign = false;
 
 	return ret;
+}
+
+BL		BL::operator+() const noexcept
+{
+	return *this;
 }
 
 BL::operator string() noexcept

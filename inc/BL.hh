@@ -23,7 +23,8 @@ public:
 	void		set_accuracy(int accuracy) noexcept;
 
 	BL			&operator=(BL const& bl);
-	BL			operator-() const;
+	BL			operator-() const noexcept;
+	BL			operator+() const noexcept;
 
 	friend bool	operator<(BL const& num1, BL const& num2);
 	friend BL	operator+(BL const& num1, BL const& num2);
