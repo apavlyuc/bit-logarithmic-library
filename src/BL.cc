@@ -108,7 +108,7 @@ void	BL::actualize_num_str_dec() noexcept // need code
 		return;
 
 	if (!_is_num_list_bl_actual)
-		actualize_num_vector_bl();
+		actualize_num_list_bl();
 }
 
 void	BL::actualize_num_str_bl() noexcept // need code
@@ -127,7 +127,7 @@ void	BL::actualize_num_str_bl() noexcept // need code
 	}
 }
 
-void	BL::actualize_num_vector_bl() noexcept
+void	BL::actualize_num_list_bl() noexcept
 {
 	if (_is_num_list_bl_actual)
 		return;
@@ -171,8 +171,8 @@ void	BL::actualize_num_vector_bl() noexcept
 
 bool	operator<(BL const& num1, BL const& num2)
 {
-	const_cast<BL&>(num1).actualize_num_vector_bl();
-	const_cast<BL&>(num2).actualize_num_vector_bl();
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
 
 	// if both num1 and num2 are zero
 	if (num1._precision == 0 && num2._precision == 0)
@@ -228,9 +228,9 @@ BL		operator+(BL const& num1, BL const& num2)
 {
 	BL ret;
 
-	// actualize values in vector
-	const_cast<BL&>(num1).actualize_num_vector_bl();
-	const_cast<BL&>(num2).actualize_num_vector_bl();
+	// actualize values in list
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
 
 	// determine sign
 	if (num1._sign && num2._sign)
@@ -271,8 +271,8 @@ BL		operator-(BL const& num1, BL const& num2) // need code
 {
 	BL ret;
 
-	const_cast<BL&>(num1).actualize_num_vector_bl();
-	const_cast<BL&>(num2).actualize_num_vector_bl();
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
 
 	return ret;
 }
@@ -281,9 +281,9 @@ BL		operator*(BL const& num1, BL const& num2)
 {
 	BL ret;
 
-	// actualize values in vector
-	const_cast<BL&>(num1).actualize_num_vector_bl();
-	const_cast<BL&>(num2).actualize_num_vector_bl();
+	// actualize values in list
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
 
 	// determine sign
 	if ((num1._sign && num2._sign) || (!num1._sign && !num2._sign))
@@ -291,7 +291,7 @@ BL		operator*(BL const& num1, BL const& num2)
 	else
 		ret._sign = false;
 
-	// insert vector from both nums
+	// insert list from both nums
 	{
 		int len_num1 = num1._precision <= num1._num_list_bl.size() ? num1._precision : num1._num_list_bl.size();
 		int len_num2 = num2._precision <= num2._num_list_bl.size() ? num2._precision : num2._num_list_bl.size();
@@ -314,8 +314,8 @@ BL		operator/(BL const& num1, BL const& num2) // need code
 {
 	BL ret;
 
-	const_cast<BL&>(num1).actualize_num_vector_bl();
-	const_cast<BL&>(num2).actualize_num_vector_bl();
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
 
 	return ret;
 }
@@ -351,7 +351,7 @@ BL		&BL::operator=(BL const& bl)
 BL		BL::operator-() const noexcept
 {
 	BL ret = *this;
-	ret.actualize_num_vector_bl();
+	ret.actualize_num_list_bl();
 
 	ret._sign = false;
 

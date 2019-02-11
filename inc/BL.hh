@@ -37,7 +37,7 @@ public:
 private:
 	void		actualize_num_str_dec() noexcept;
 	void		actualize_num_str_bl() noexcept;
-	void		actualize_num_vector_bl() noexcept;
+	void		actualize_num_list_bl() noexcept;
 
 	string		_num_str_dec;
 	bool		_is_num_str_dec_actual = false;
