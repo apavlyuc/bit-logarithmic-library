@@ -197,9 +197,6 @@ bool	operator<(BL const& num1, BL const& num2)
 			auto it1 = num1._num_list_bl.begin();
 			auto it2 = num2._num_list_bl.begin();
 
-			int power1 = std::numeric_limits<int>::min();
-			int power2 = std::numeric_limits<int>::min();
-
 			int precision1 = num1._precision;
 			int precision2 = num2._precision;
 			while (it1 != num1._num_list_bl.end() && precision1 != 0 &&
