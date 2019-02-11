@@ -77,7 +77,7 @@ string	BL::get_decimal_form() noexcept
 	if (!_is_num_str_dec_actual)
 		actualize_num_str_dec();
 
-	return std::move(_num_str_dec);
+	return _num_str_dec;
 }
 
 string	BL::get_bl_form() noexcept
@@ -85,7 +85,7 @@ string	BL::get_bl_form() noexcept
 	if (!_is_num_str_bl_actual)
 		actualize_num_str_bl();
 
-	return std::move(_num_str_bl);
+	return _num_str_bl;
 }
 
 int		BL::get_precision() const noexcept
