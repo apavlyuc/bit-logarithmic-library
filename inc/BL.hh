@@ -16,11 +16,11 @@ public:
 	BL(BL const& bl);
 	~BL() = default;
 
-	string		get_binary_form() noexcept;
+	string		get_decimal_form() noexcept;
 	string		get_bl_form() noexcept;
 
-	int			get_accuracy() const noexcept;
-	void		set_accuracy(int accuracy) noexcept;
+	int			get_precision() const noexcept;
+	void		set_precision(int precision) noexcept;
 
 	BL			&operator=(BL const& bl);
 	BL			operator-() const noexcept;
@@ -35,18 +35,18 @@ public:
 	operator string() noexcept;
 
 private:
-	void		actualize_num_str_bin() noexcept;
+	void		actualize_num_str_dec() noexcept;
 	void		actualize_num_str_bl() noexcept;
 	void		actualize_num_vector_bl() noexcept;
 
-	string		_num_str_bin;
-	bool		_is_num_str_bin_actual = false;
+	string		_num_str_dec;
+	bool		_is_num_str_dec_actual = false;
 
 	string		_num_str_bl;
 	bool		_is_num_str_bl_actual = false;
 
 	list<int>	_num_list_bl;
 	bool		_sign;
-	int			_accuracy;
+	int			_precision;
 	bool		_is_num_list_bl_actual = false;
 };

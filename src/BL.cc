@@ -15,20 +15,20 @@ static bool	optimise_list_bl(list<int>& vec);
 
 BL::BL(long long num)
 {
-	_num_str_bin = to_string(num);
-	_is_num_str_bin_actual = true;
+	_num_str_dec = to_string(num);
+	_is_num_str_dec_actual = true;
 }
 
 BL::BL(double num)
 {
-	_num_str_bin = to_string(num);
-	_is_num_str_bin_actual = true;
+	_num_str_dec = to_string(num);
+	_is_num_str_dec_actual = true;
 }
 
 BL::BL(unsigned long long num)
 {
-	_num_str_bin = to_string(num);
-	_is_num_str_bin_actual = true;
+	_num_str_dec = to_string(num);
+	_is_num_str_dec_actual = true;
 }
 
 BL::BL(string const& num_str, bool is_bl_form)
@@ -40,19 +40,19 @@ BL::BL(string const& num_str, bool is_bl_form)
 	}
 	else
 	{
-		_num_str_bin = num_str;
-		_is_num_str_bin_actual = true;
+		_num_str_dec = num_str;
+		_is_num_str_dec_actual = true;
 	}
 }
 
 BL::BL(BL const& bl)
 {
-	if (bl._is_num_str_bin_actual)
+	if (bl._is_num_str_dec_actual)
 	{
-		_num_str_bin = bl._num_str_bin;
-		_is_num_str_bin_actual = true;
+		_num_str_dec = bl._num_str_dec;
+		_is_num_str_dec_actual = true;
 	}
-	
+
 	if (bl._is_num_str_bl_actual)
 	{
 		_num_str_bl = bl._num_str_bl;
@@ -62,7 +62,7 @@ BL::BL(BL const& bl)
 	if (bl._is_num_list_bl_actual)
 	{
 		_num_list_bl = bl._num_list_bl;
-		_accuracy = bl._accuracy;
+		_precision = bl._precision;
 		_sign = bl._sign;
 		_is_num_list_bl_actual = true;
 	}
@@ -72,41 +72,41 @@ BL::BL(BL const& bl)
 **			public methods
 */
 
-string	BL::get_binary_form() noexcept
+string	BL::get_decimal_form() noexcept
 {
-	if (!_is_num_str_bin_actual)	
-		actualize_num_str_bin();
+	if (!_is_num_str_dec_actual)
+		actualize_num_str_dec();
 
-	return std::move(_num_str_bin);
+	return std::move(_num_str_dec);
 }
 
 string	BL::get_bl_form() noexcept
 {
 	if (!_is_num_str_bl_actual)
 		actualize_num_str_bl();
-	
+
 	return std::move(_num_str_bl);
 }
 
-int		BL::get_accuracy() const noexcept
+int		BL::get_precision() const noexcept
 {
-	return _accuracy;
+	return _precision;
 }
 
-void	BL::set_accuracy(int accuracy) noexcept
+void	BL::set_precision(int precision) noexcept
 {
-	_accuracy = accuracy;
+	_precision = precision;
 }
 
 /*
 **			private methods
 */
 
-void	BL::actualize_num_str_bin() noexcept // need code
+void	BL::actualize_num_str_dec() noexcept // need code
 {
-	if (_is_num_str_bin_actual)
+	if (_is_num_str_dec_actual)
 		return;
-	
+
 	if (!_is_num_list_bl_actual)
 		actualize_num_vector_bl();
 }
@@ -115,12 +115,12 @@ void	BL::actualize_num_str_bl() noexcept // need code
 {
 	if (_is_num_str_bl_actual)
 		return;
-	
-	if (_is_num_str_bin_actual)
+
+	if (_is_num_str_dec_actual)
 	{
 		// TODO:
 	}
-	
+
 	if (_is_num_list_bl_actual)
 	{
 		// TODO:
@@ -138,10 +138,10 @@ void	BL::actualize_num_vector_bl() noexcept
 	// determine sign
 	_sign = _num_str_bl[0] == '0' ? true : false;
 
-	// determine accuracy
-	_accuracy = std::atoi(_num_str_bl.c_str() + 2);
+	// determine precision
+	_precision = std::atoi(_num_str_bl.c_str() + 2);
 
-	// _num_str_bl without sign and accuracy
+	// _num_str_bl without sign and precision
 	string nums_str = _num_str_bl.substr(1 + _num_str_bl.find('.', 2));
 
 	size_t pos = 0;
@@ -175,19 +175,19 @@ bool	operator<(BL const& num1, BL const& num2) // need code
 	const_cast<BL&>(num2).actualize_num_vector_bl();
 
 	// if both num1 and num2 are zero
-	if (num1._accuracy == 0 && num2._accuracy == 0)
+	if (num1._precision == 0 && num2._precision == 0)
 		return false;
 	// if only num1 is zero
-	if (num1._accuracy == 0 && num2._sign == true)
+	if (num1._precision == 0 && num2._sign == true)
 		return true;
 	// if only num2 is zero
-	if (num1._sign == false && num2._accuracy == 0)
+	if (num1._sign == false && num2._precision == 0)
 		return true;
 
 	// if num1 is negative and num2 is positive
 	if (num1._sign == false && num2._sign == true)
 		return true;
-	
+
 	// if the same sign
 	if (num1._sign == num2._sign)
 	{
@@ -200,10 +200,10 @@ bool	operator<(BL const& num1, BL const& num2) // need code
 			int power1 = std::numeric_limits<int>::min();
 			int power2 = std::numeric_limits<int>::min();
 
-			int accuracy1 = num1._accuracy;
-			int accuracy2 = num2._accuracy;
-			while (it1 != num1._num_list_bl.end() && accuracy1 != 0 &&
-					it2 != num2._num_list_bl.end() && accuracy2 != 0)
+			int precision1 = num1._precision;
+			int precision2 = num2._precision;
+			while (it1 != num1._num_list_bl.end() && precision1 != 0 &&
+					it2 != num2._num_list_bl.end() && precision2 != 0)
 			{
 				if (*it1 != *it2)
 				{
@@ -211,8 +211,8 @@ bool	operator<(BL const& num1, BL const& num2) // need code
 					power2 = *it2;
 					break;
 				}
-				--accuracy1;
-				--accuracy2;
+				--precision1;
+				--precision2;
 				++it1;
 				++it2;
 			}
@@ -249,8 +249,8 @@ BL		operator+(BL const& num1, BL const& num2)
 
 	// insert list from both nums
 	{
-		int len_num1 = num1._accuracy <= num1._num_list_bl.size() ? num1._accuracy : num1._num_list_bl.size();
-		int len_num2 = num2._accuracy <= num2._num_list_bl.size() ? num2._accuracy : num2._num_list_bl.size();
+		int len_num1 = num1._precision <= num1._num_list_bl.size() ? num1._precision : num1._num_list_bl.size();
+		int len_num2 = num2._precision <= num2._num_list_bl.size() ? num2._precision : num2._num_list_bl.size();
 
 		auto it_num1_end = std::begin(num1._num_list_bl);
 		auto it_num2_end = std::begin(num2._num_list_bl);
@@ -295,8 +295,8 @@ BL		operator*(BL const& num1, BL const& num2)
 
 	// insert vector from both nums
 	{
-		int len_num1 = num1._accuracy <= num1._num_list_bl.size() ? num1._accuracy : num1._num_list_bl.size();
-		int len_num2 = num2._accuracy <= num2._num_list_bl.size() ? num2._accuracy : num2._num_list_bl.size();
+		int len_num1 = num1._precision <= num1._num_list_bl.size() ? num1._precision : num1._num_list_bl.size();
+		int len_num2 = num2._precision <= num2._num_list_bl.size() ? num2._precision : num2._num_list_bl.size();
 
 		for (auto it1 = num1._num_list_bl.begin(); len_num1 != 0; ++it1, --len_num1)
 		{
@@ -315,7 +315,7 @@ BL		operator*(BL const& num1, BL const& num2)
 BL		operator/(BL const& num1, BL const& num2) // need code
 {
 	BL ret;
-	
+
 	const_cast<BL&>(num1).actualize_num_vector_bl();
 	const_cast<BL&>(num2).actualize_num_vector_bl();
 
@@ -326,11 +326,11 @@ BL		&BL::operator=(BL const& bl)
 {
 	if (this == &bl)
 		return *this;
-	
-	if (bl._is_num_str_bin_actual)
+
+	if (bl._is_num_str_dec_actual)
 	{
-		_num_str_bin = bl._num_str_bin;
-		_is_num_str_bin_actual = true;
+		_num_str_dec = bl._num_str_dec;
+		_is_num_str_dec_actual = true;
 	}
 
 	if (bl._is_num_str_bl_actual)
@@ -343,7 +343,7 @@ BL		&BL::operator=(BL const& bl)
 	{
 		_num_list_bl = bl._num_list_bl;
 		_sign = bl._sign;
-		_accuracy = bl._accuracy;
+		_precision = bl._precision;
 		_is_num_list_bl_actual = true;
 	}
 
