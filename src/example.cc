@@ -1,5 +1,12 @@
 #include "../inc/BL.hh"
 
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
+// тут говно, TODO: replace говно by не совсем говно
+
 int main()
 {
     BL first_num;
