@@ -169,7 +169,7 @@ void	BL::actualize_num_vector_bl() noexcept
 **			operators
 */
 
-bool	operator<(BL const& num1, BL const& num2) // need code
+bool	operator<(BL const& num1, BL const& num2)
 {
 	const_cast<BL&>(num1).actualize_num_vector_bl();
 	const_cast<BL&>(num2).actualize_num_vector_bl();
@@ -191,7 +191,7 @@ bool	operator<(BL const& num1, BL const& num2) // need code
 	// if the same sign
 	if (num1._sign == num2._sign)
 	{
-		bool first_powers_comp = false; // need fix
+		bool first_powers_comp = false;
 
 		{
 			auto it1 = num1._num_list_bl.begin();
@@ -206,18 +206,19 @@ bool	operator<(BL const& num1, BL const& num2) // need code
 					it2 != num2._num_list_bl.end() && precision2 != 0)
 			{
 				if (*it1 != *it2)
-				{
-					power1 = *it1;
-					power2 = *it2;
-					break;
-				}
+					return num1._sign && (*it1 < *it2);
+
 				--precision1;
 				--precision2;
 				++it1;
 				++it2;
 			}
 
-			first_powers_comp = power1 < power2;
+			if (it1 == num1._num_list_bl.end() || precision1 == 0)
+			{
+				if (it2 != num2._num_list_bl.end() && precision2 != 0)
+					first_powers_comp = true;
+			}
 		}
 
 		return num1._sign && first_powers_comp;
