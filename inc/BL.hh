@@ -1,10 +1,10 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <list>
 
 using std::string;
-using std::vector;
+using std::list;
 
 class BL
 {
@@ -45,8 +45,8 @@ private:
 	string		_num_str_bl;
 	bool		_is_num_str_bl_actual = false;
 
-	vector<int>	_num_vector_bl;
+	list<int>	_num_list_bl;
 	bool		_sign;
 	int			_accuracy;
-	bool		_is_num_vector_bl_actual = false;
+	bool		_is_num_list_bl_actual = false;
 };

@@ -3,10 +3,11 @@
 #include <cstdlib>
 #include <utility>
 #include <iterator>
+#include <functional>
 
 using std::to_string;
 
-static bool	optimise_vector_bl(vector<int>& vec);
+static bool	optimise_list_bl(list<int>& vec);
 
 /*
 **			constructors / destructors
@@ -58,12 +59,12 @@ BL::BL(BL const& bl)
 		_is_num_str_bl_actual = true;
 	}
 
-	if (bl._is_num_vector_bl_actual)
+	if (bl._is_num_list_bl_actual)
 	{
-		_num_vector_bl = bl._num_vector_bl;
+		_num_list_bl = bl._num_list_bl;
 		_accuracy = bl._accuracy;
 		_sign = bl._sign;
-		_is_num_vector_bl_actual = true;
+		_is_num_list_bl_actual = true;
 	}
 }
 
@@ -106,7 +107,7 @@ void	BL::actualize_num_str_bin() noexcept // need code
 	if (_is_num_str_bin_actual)
 		return;
 	
-	if (!_is_num_vector_bl_actual)
+	if (!_is_num_list_bl_actual)
 		actualize_num_vector_bl();
 }
 
@@ -120,7 +121,7 @@ void	BL::actualize_num_str_bl() noexcept // need code
 		// TODO:
 	}
 	
-	if (_is_num_vector_bl_actual)
+	if (_is_num_list_bl_actual)
 	{
 		// TODO:
 	}
@@ -128,7 +129,7 @@ void	BL::actualize_num_str_bl() noexcept // need code
 
 void	BL::actualize_num_vector_bl() noexcept
 {
-	if (_is_num_vector_bl_actual)
+	if (_is_num_list_bl_actual)
 		return;
 
 	if (!_is_num_str_bl_actual)
@@ -151,23 +152,24 @@ void	BL::actualize_num_vector_bl() noexcept
 		if (!*ptr) break;
 
 		int number = std::atoi(ptr);
-		_num_vector_bl.push_back(number);
+		_num_list_bl.push_back(number);
 
 		pos = nums_str.find('.', pos + 1);
 		if (pos == string::npos)
 			break;
 		++pos;
 	}
+	_num_list_bl.sort(std::greater<int>());
 
-	// replace each two similar values (x) in vector by one (x + 1)
-	while (optimise_vector_bl(_num_vector_bl));
+	// replace each two similar values (x) in list by one (x + 1)
+	while (optimise_list_bl(_num_list_bl));
 }
 
 /*
 **			operators
 */
 
-bool	operator<(BL const& num1, BL const& num2)
+bool	operator<(BL const& num1, BL const& num2) // need code
 {
 	const_cast<BL&>(num1).actualize_num_vector_bl();
 	const_cast<BL&>(num2).actualize_num_vector_bl();
@@ -189,7 +191,35 @@ bool	operator<(BL const& num1, BL const& num2)
 	// if the same sign
 	if (num1._sign == num2._sign)
 	{
-		bool first_powers_comp = num1._num_vector_bl[0] < num2._num_vector_bl[0];
+		bool first_powers_comp = false; // need fix
+
+		{
+			auto it1 = num1._num_list_bl.begin();
+			auto it2 = num2._num_list_bl.begin();
+
+			int power1 = std::numeric_limits<int>::min();
+			int power2 = std::numeric_limits<int>::min();
+
+			int accuracy1 = num1._accuracy;
+			int accuracy2 = num2._accuracy;
+			while (it1 != num1._num_list_bl.end() && accuracy1 != 0 &&
+					it2 != num2._num_list_bl.end() && accuracy2 != 0)
+			{
+				if (*it1 != *it2)
+				{
+					power1 = *it1;
+					power2 = *it2;
+					break;
+				}
+				--accuracy1;
+				--accuracy2;
+				++it1;
+				++it2;
+			}
+
+			first_powers_comp = power1 < power2;
+		}
+
 		return num1._sign && first_powers_comp;
 	}
 
@@ -217,17 +247,24 @@ BL		operator+(BL const& num1, BL const& num2)
 			ret._sign = -num1 < num2;
 	}
 
-	// insert vector from both nums
+	// insert list from both nums
 	{
-		int len_num1 = num1._accuracy <= num1._num_vector_bl.size() ? num1._accuracy : num1._num_vector_bl.size();
-		int len_num2 = num2._accuracy <= num2._num_vector_bl.size() ? num2._accuracy : num2._num_vector_bl.size();
+		int len_num1 = num1._accuracy <= num1._num_list_bl.size() ? num1._accuracy : num1._num_list_bl.size();
+		int len_num2 = num2._accuracy <= num2._num_list_bl.size() ? num2._accuracy : num2._num_list_bl.size();
 
-		ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num1._num_vector_bl), std::begin(num1._num_vector_bl) + len_num1);
-		ret._num_vector_bl.insert(std::end(ret._num_vector_bl), std::begin(num2._num_vector_bl), std::begin(num2._num_vector_bl) + len_num2);
+		auto it_num1_end = std::begin(num1._num_list_bl);
+		auto it_num2_end = std::begin(num2._num_list_bl);
+
+		std::advance(it_num1_end, len_num1);
+		std::advance(it_num2_end, len_num2);
+
+		ret._num_list_bl.insert(std::end(ret._num_list_bl), std::begin(num1._num_list_bl), it_num1_end);
+		ret._num_list_bl.insert(std::end(ret._num_list_bl), std::begin(num2._num_list_bl), it_num2_end);
 	}
+	ret._num_list_bl.sort(std::greater<int>());
 
-	// replace each two similar values (x) in vector by one (x + 1)
-	while (optimise_vector_bl(ret._num_vector_bl));
+	// replace each two similar values (x) in list by one (x + 1)
+	while (optimise_list_bl(ret._num_list_bl));
 
 	return ret;
 }
@@ -258,18 +295,19 @@ BL		operator*(BL const& num1, BL const& num2)
 
 	// insert vector from both nums
 	{
-		int len_num1 = num1._accuracy <= num1._num_vector_bl.size() ? num1._accuracy : num1._num_vector_bl.size();
-		int len_num2 = num2._accuracy <= num2._num_vector_bl.size() ? num2._accuracy : num2._num_vector_bl.size();
-		
-		for (int i = 0; i < len_num1; ++i)
+		int len_num1 = num1._accuracy <= num1._num_list_bl.size() ? num1._accuracy : num1._num_list_bl.size();
+		int len_num2 = num2._accuracy <= num2._num_list_bl.size() ? num2._accuracy : num2._num_list_bl.size();
+
+		for (auto it1 = num1._num_list_bl.begin(); len_num1 != 0; ++it1, --len_num1)
 		{
-			for (int j = 0; i < len_num2; ++j)
-				ret._num_vector_bl.push_back(num1._num_vector_bl[i] + num2._num_vector_bl[j]);
+			for (auto it2 = num2._num_list_bl.begin(); len_num2 != 0; ++it2, --len_num2)
+				ret._num_list_bl.push_back(*it1 + *it2);
 		}
 	}
+	ret._num_list_bl.sort(std::greater<int>());
 
-	// replace each two similar values (x) in vector by one (x + 1)
-	while (optimise_vector_bl(ret._num_vector_bl));
+	// replace each two similar values (x) in list by one (x + 1)
+	while (optimise_list_bl(ret._num_list_bl));
 
 	return ret;
 }
@@ -301,12 +339,12 @@ BL		&BL::operator=(BL const& bl)
 		_is_num_str_bl_actual = true;
 	}
 
-	if (bl._is_num_vector_bl_actual)
+	if (bl._is_num_list_bl_actual)
 	{
-		_num_vector_bl = bl._num_vector_bl;
+		_num_list_bl = bl._num_list_bl;
 		_sign = bl._sign;
 		_accuracy = bl._accuracy;
-		_is_num_vector_bl_actual = true;
+		_is_num_list_bl_actual = true;
 	}
 
 	return *this;
@@ -336,14 +374,16 @@ BL::operator string() noexcept
 **			functions
 */
 
-bool	optimise_vector_bl(vector<int>& vec)
+bool	optimise_list_bl(list<int>& vec)
 {
 	for (auto it = vec.begin(); it != vec.end(); ++it)
 	{
-		if (*it == *(it + 1))
+		auto next = it;
+		next++;
+		if (*it == *next)
 		{
 			*it += 1;
-			vec.erase(it + 1);
+			vec.erase(next);
 			return true;
 		}
 	}
