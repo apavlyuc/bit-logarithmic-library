@@ -17,6 +17,7 @@ public:
 	BL(unsigned long long num);
 	BL(string const& num_str, bool is_bl_form = false);
 	BL(BL const& bl);
+	BL(BL&& bl);
 	~BL() = default;
 
 	string			get_decimal_form() noexcept;

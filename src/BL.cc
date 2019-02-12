@@ -68,6 +68,29 @@ BL::BL(BL const& bl)
 	}
 }
 
+BL::BL(BL&& bl)
+{
+	if (bl._is_num_str_dec_actual)
+	{
+		_num_str_dec = std::move(bl._num_str_dec);
+		_is_num_str_dec_actual = true;
+	}
+
+	if (bl._is_num_str_bl_actual)
+	{
+		_num_str_bl = std::move(bl._num_str_bl);
+		_is_num_str_bl_actual = true;
+	}
+
+	if (bl._is_num_list_bl_actual)
+	{
+		_num_list_bl = std::move(bl._num_list_bl);
+		_precision = bl._precision;
+		_sign = bl._sign;
+		_is_num_list_bl_actual = true;
+	}
+}
+
 /*
 **			public methods
 */
