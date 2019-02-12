@@ -163,6 +163,9 @@ void	BL::actualize_num_list_bl() noexcept
 
 	// replace each two similar values (x) in list by one (x + 1)
 	while (optimise_list_bl(_num_list_bl));
+
+	// set actualities flag as true before return
+	_is_num_list_bl_actual = true;
 }
 
 /*
