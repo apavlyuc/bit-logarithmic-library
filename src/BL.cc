@@ -227,6 +227,62 @@ bool	operator<(BL const& num1, BL const& num2)
 	return false;
 }
 
+bool	operator>(BL const& num1, BL const& num2)
+{
+	return !(num1 <= num2);
+}
+
+bool	operator<=(BL const& num1, BL const& num2)
+{
+	return (num1 < num2 || num1 == num2);
+}
+
+bool	operator>=(BL const& num1, BL const& num2)
+{
+	return !(num1 < num2);
+}
+
+bool	operator==(BL const& num1, BL const& num2)
+{
+	if (num1._is_num_str_bl_actual && num2._is_num_str_bl_actual)
+		return num1._num_str_bl == num2._num_str_bl;
+
+	if (num1._is_num_str_dec_actual && num2._is_num_str_dec_actual)
+		return num1._num_str_dec == num2._num_str_dec;
+
+	const_cast<BL&>(num1).actualize_num_list_bl();
+	const_cast<BL&>(num2).actualize_num_list_bl();
+
+	{
+		int precision1 = num1._precision;
+		int precision2 = num2._precision;
+		auto it1 = num1._num_list_bl.begin();
+		auto it2 = num2._num_list_bl.begin();
+
+		while (it1 != num1._num_list_bl.end() && precision1 != 0 &&
+			   it2 != num2._num_list_bl.end() && precision2 != 0)
+		{
+			if (*it1 != *it2)
+				return false;
+			
+			++it1;
+			++it2;
+			--precision1;
+			--precision2;
+		}
+
+		if (it1 == num1._num_list_bl.end() && (it2 == num2._num_list_bl.end() || precision2 == 0) ||
+			precision1 == 0 && (it2 == num2._num_list_bl.end() || precision2 == 0))
+			return true;
+	}
+	return false;
+}
+
+bool	operator!=(BL const& num1, BL const& num2)
+{
+	return !(num1 == num2);
+}
+
 BL		operator+(BL const& num1, BL const& num2)
 {
 	BL ret;

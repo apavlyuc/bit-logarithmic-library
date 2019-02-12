@@ -30,6 +30,11 @@ public:
 	BL				operator+() const noexcept;
 
 	friend bool		operator<(BL const& num1, BL const& num2);
+	friend bool		operator>(BL const& num1, BL const& num2);
+	friend bool		operator>=(BL const& num1, BL const& num2);
+	friend bool		operator<=(BL const& num1, BL const& num2);
+	friend bool		operator==(BL const& num1, BL const& num2);
+	friend bool		operator!=(BL const& num1, BL const& num2);
 	friend BL		operator+(BL const& num1, BL const& num2);
 	friend BL		operator-(BL const& num1, BL const& num2);
 	friend BL		operator*(BL const& num1, BL const& num2);
