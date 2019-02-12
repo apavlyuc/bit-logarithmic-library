@@ -25,7 +25,7 @@ BL::BL(double num)
 	_is_num_str_dec_actual = true;
 }
 
-BL::BL(unsigned long long num)
+BL::BL(size_t num)
 {
 	_num_str_dec = to_string(num);
 	_is_num_str_dec_actual = true;
