@@ -1,10 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <list>
 
 using std::string;
 using std::list;
+using std::ostream;
+using std::istream;
 
 class BL
 {
@@ -16,21 +19,23 @@ public:
 	BL(BL const& bl);
 	~BL() = default;
 
-	string		get_decimal_form() noexcept;
-	string		get_bl_form() noexcept;
+	string			get_decimal_form() noexcept;
+	string			get_bl_form() noexcept;
 
-	int			get_precision() const noexcept;
-	void		set_precision(int precision) noexcept;
+	int				get_precision() const noexcept;
+	void			set_precision(int precision) noexcept;
 
-	BL			&operator=(BL const& bl);
-	BL			operator-() const noexcept;
-	BL			operator+() const noexcept;
+	BL				&operator=(BL const& bl);
+	BL				operator-() const noexcept;
+	BL				operator+() const noexcept;
 
-	friend bool	operator<(BL const& num1, BL const& num2);
-	friend BL	operator+(BL const& num1, BL const& num2);
-	friend BL	operator-(BL const& num1, BL const& num2);
-	friend BL	operator*(BL const& num1, BL const& num2);
-	friend BL	operator/(BL const& num1, BL const& num2);
+	friend bool		operator<(BL const& num1, BL const& num2);
+	friend BL		operator+(BL const& num1, BL const& num2);
+	friend BL		operator-(BL const& num1, BL const& num2);
+	friend BL		operator*(BL const& num1, BL const& num2);
+	friend BL		operator/(BL const& num1, BL const& num2);
+	friend ostream	&operator<<(ostream& out, BL const& obj);
+	friend istream	&operator>>(istream& in, BL& obj);
 
 	operator string() noexcept;
 

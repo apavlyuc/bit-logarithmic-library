@@ -335,6 +335,34 @@ BL		operator/(BL const& num1, BL const& num2) // need code
 	return ret;
 }
 
+ostream	&operator<<(ostream& out, BL const& obj)
+{
+	const_cast<BL&>(obj).actualize_num_str_dec();
+
+	out << obj._num_str_dec;
+
+	return out;
+}
+
+istream	&operator>>(istream& in, BL& obj)
+{
+	string input;
+	in >> input;
+
+	if (input.find('.') == input.rfind('.'))
+	{
+		obj._num_str_dec = std::move(input);
+		obj._is_num_str_dec_actual = true;
+	}
+	else
+	{
+		obj._num_str_bl = std::move(input);
+		obj._is_num_str_bl_actual = true;
+	}
+
+	return in;
+}
+
 BL		&BL::operator=(BL const& bl)
 {
 	if (this == &bl)
