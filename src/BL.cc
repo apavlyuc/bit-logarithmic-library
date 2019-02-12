@@ -264,6 +264,12 @@ BL		operator+(BL const& num1, BL const& num2)
 	// replace each two similar values (x) in list by one (x + 1)
 	while (optimise_list_bl(ret._num_list_bl));
 
+	// set default precision (for BL object that is its list size)
+	ret._precision = ret._num_list_bl.size();
+
+	// set actualities flag as true before return
+	ret._is_num_list_bl_actual = true;
+
 	return ret;
 }
 
