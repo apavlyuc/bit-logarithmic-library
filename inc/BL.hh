@@ -27,6 +27,7 @@ public:
 	void			set_precision(int precision) noexcept;
 
 	BL				&operator=(BL const& bl);
+	BL				&operator=(BL&& bl);
 	BL				operator-() const noexcept;
 	BL				operator+() const noexcept;
 

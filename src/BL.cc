@@ -470,6 +470,34 @@ BL		&BL::operator=(BL const& bl)
 	return *this;
 }
 
+BL		&BL::operator=(BL&& bl)
+{
+	if (this == &bl)
+		return *this;
+
+	if (bl._is_num_str_dec_actual)
+	{
+		_num_str_dec = std::move(bl._num_str_dec);
+		_is_num_str_dec_actual = true;
+	}
+
+	if (bl._is_num_str_bl_actual)
+	{
+		_num_str_bl = std::move(bl._num_str_bl);
+		_is_num_str_bl_actual = true;
+	}
+
+	if (bl._is_num_list_bl_actual)
+	{
+		_num_list_bl = std::move(bl._num_list_bl);
+		_sign = bl._sign;
+		_precision = bl._precision;
+		_is_num_list_bl_actual = true;
+	}
+
+	return *this;
+}
+
 BL		BL::operator-() const noexcept
 {
 	BL ret = *this;
