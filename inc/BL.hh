@@ -16,6 +16,7 @@ public:
 	BL(long long num);
 	BL(double num);
 	BL(size_t num);
+	BL(string&& num_str, bool is_bl_form = false);
 	BL(string const& num_str, bool is_bl_form = false);
 	BL(BL const& bl);
 	BL(BL&& bl);

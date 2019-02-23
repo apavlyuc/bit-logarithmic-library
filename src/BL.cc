@@ -17,22 +17,30 @@ BL::BL(int num) : BL(to_string(num))
 {
 }
 
-BL::BL(long long num)
+BL::BL(long long num) : BL(to_string(num))
 {
-	_num_str_dec = to_string(num);
-	_is_num_str_dec_actual = true;
 }
 
-BL::BL(double num)
+BL::BL(double num) : BL(to_string(num))
 {
-	_num_str_dec = to_string(num);
-	_is_num_str_dec_actual = true;
 }
 
-BL::BL(size_t num)
+BL::BL(size_t num) : BL(to_string(num))
 {
-	_num_str_dec = to_string(num);
-	_is_num_str_dec_actual = true;
+}
+
+BL::BL(string&& num_str, bool is_bl_form)
+{
+	if (is_bl_form)
+	{
+		_num_str_bl = std::move(num_str);
+		_is_num_str_bl_actual = true;
+	}
+	else
+	{
+		_num_str_dec = std::move(num_str);
+		_is_num_str_dec_actual = true;
+	}
 }
 
 BL::BL(string const& num_str, bool is_bl_form)
