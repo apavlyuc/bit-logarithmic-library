@@ -12,7 +12,8 @@ using std::istream;
 class BL
 {
 public:
-	BL(long long num = 0);
+	BL(int num = 0);
+	BL(long long num);
 	BL(double num);
 	BL(size_t num);
 	BL(string const& num_str, bool is_bl_form = false);

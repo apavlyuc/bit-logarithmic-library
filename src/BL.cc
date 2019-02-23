@@ -13,6 +13,10 @@ static bool	optimise_list_bl(list<int>& vec);
 **			constructors / destructors
 */
 
+BL::BL(int num) : BL(to_string(num))
+{
+}
+
 BL::BL(long long num)
 {
 	_num_str_dec = to_string(num);
