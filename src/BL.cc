@@ -210,7 +210,7 @@ void	BL::actualize_num_str_dec() noexcept // need code
 		actualize_num_list_bl();
 }
 
-void	BL::actualize_num_str_bl() noexcept // need code
+void	BL::actualize_num_str_bl() noexcept // need test
 {
 	if (_is_num_str_bl_actual)
 		return;
@@ -234,6 +234,7 @@ void	BL::actualize_num_str_bl() noexcept // need code
 		int len = static_cast<int>(_num_str_dec.length());
 		char *str = new char[len + 1];
 		_num_str_dec.copy(str, len);
+		_num_str_dec[len] = 0;
 
 		_num_str_bl += str[0] == '-' ? "1." : "0.";
 
@@ -261,7 +262,32 @@ void	BL::actualize_num_str_bl() noexcept // need code
 			delete[](skip_char ? (str - 1) : str);
 		}
 
-		
+		if (parts.size() == 0)
+		{
+			_is_num_str_bl_actual = true;
+			return;
+		}
+
+		BL thousand(1000);
+		BL first(parts[0]);
+
+		BL result;
+		for (int i = 1; i < parts.size(); ++i)
+		{
+			BL temp(parts[i]);
+			while (i != 0)
+			{
+				temp = temp * thousand;
+				--i;
+			}
+			result = result + temp;
+		}
+
+		_num_str_bl += result._precision + '.';
+		for (int element : result._num_list_bl)
+		{
+			_num_str_bl += to_string(element) + '.';
+		}
 
 		_is_num_str_bl_actual = true;
 
