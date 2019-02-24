@@ -14,7 +14,6 @@ class BL
 public:
 	BL(int num = 0);
 	BL(long long num);
-	BL(double num);
 	BL(size_t num);
 	BL(string&& num_str, bool is_bl_form = false);
 	BL(string const& num_str, bool is_bl_form = false);

@@ -4,8 +4,10 @@
 #include <utility>
 #include <iterator>
 #include <functional>
+#include <vector>
 
 using std::to_string;
+using std::vector;
 
 static bool	optimise_list_bl(list<int>& vec);
 
@@ -13,20 +15,82 @@ static bool	optimise_list_bl(list<int>& vec);
 **			constructors / destructors
 */
 
-BL::BL(int num) : BL(to_string(num))
+BL::BL(int num) : BL(static_cast<long long>(num))
 {
 }
 
-BL::BL(long long num) : BL(to_string(num))
+BL::BL(long long num)
 {
+	{// init str_dec part
+		_num_str_dec = to_string(num);
+		_is_num_str_dec_actual = true;
+	}
+
+	{// init num_list_bl part
+		_sign = num >=0 ? true : false;
+
+		int bits_count = sizeof(num) * 8 - 1;
+		for (int i = 0; i < bits_count; ++i)
+		{
+			if (num & 1)
+				_num_list_bl.insert(_num_list_bl.begin(), i);
+			num = num >> 1;
+		}
+
+		_precision = _num_list_bl.size();
+
+		_is_num_list_bl_actual = true;
+	}
+
+	{// init str_bl part
+		_num_str_bl += _sign ? "0." : "1.";
+
+		_num_str_bl += to_string(_precision) + '.';
+
+		for (int element : _num_list_bl)
+		{
+			_num_str_bl += to_string(element) + '.';
+		}
+
+		_is_num_str_bl_actual = true;
+	}
 }
 
-BL::BL(double num) : BL(to_string(num))
+BL::BL(size_t num)
 {
-}
+	{// init str_dec part
+		_num_str_dec = to_string(num);
+		_is_num_str_dec_actual = true;
+	}
 
-BL::BL(size_t num) : BL(to_string(num))
-{
+	{// init num_list_bl part
+		_sign = true;
+
+		int bits_count = sizeof(num) * 8;
+		for (int i = 0; i < bits_count; ++i)
+		{
+			if (num & 1)
+				_num_list_bl.insert(_num_list_bl.begin(), i);
+			num = num >> 1;
+		}
+
+		_precision = _num_list_bl.size();
+
+		_is_num_list_bl_actual = true;
+	}
+
+	{// init str_bl part
+		_num_str_bl += "0.";
+
+		_num_str_bl += to_string(_precision) + '.';
+
+		for (int element : _num_list_bl)
+		{
+			_num_str_bl += to_string(element) + '.';
+		}
+
+		_is_num_str_bl_actual = true;
+	}
 }
 
 BL::BL(string&& num_str, bool is_bl_form)
@@ -151,14 +215,57 @@ void	BL::actualize_num_str_bl() noexcept // need code
 	if (_is_num_str_bl_actual)
 		return;
 
-	if (_is_num_str_dec_actual)
-	{
-		// TODO:
-	}
+	_num_str_bl.clear();
 
 	if (_is_num_list_bl_actual)
 	{
-		// TODO:
+		_num_str_bl += _sign ? "0." : "1.";
+		_num_str_bl += to_string(_num_list_bl.size()) + '.';
+		for (auto num : _num_list_bl)
+			_num_str_bl += to_string(num) + '.';
+
+		_is_num_str_bl_actual = true;
+
+		return;
+	}
+
+	if (_is_num_str_dec_actual)
+	{
+		int len = static_cast<int>(_num_str_dec.length());
+		char *str = new char[len + 1];
+		_num_str_dec.copy(str, len);
+
+		_num_str_bl += str[0] == '-' ? "1." : "0.";
+
+		bool skip_char = false;
+		if (str[0] == '-' || str[0] == '+')
+		{
+			skip_char = true;
+			++str;
+			--len;
+		}
+
+		vector<int> parts;
+		{// init parts. For number 1234567 vec'll be [567, 234, 1]
+			for (int i = len; i > 0; i -= 3)
+			{
+				str[i] = 0;
+				parts.push_back(atoi(i >= 3 ? str + i - 3 : str));
+			}
+
+			while (parts.size() > 1 && parts.back() == 0)
+			{
+				parts.pop_back();
+			}
+
+			delete[](skip_char ? (str - 1) : str);
+		}
+
+		
+
+		_is_num_str_bl_actual = true;
+
+		return;
 	}
 }
 
