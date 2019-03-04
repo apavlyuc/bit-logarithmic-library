@@ -41,7 +41,7 @@ BigNumber::BigNumber(long long nbr)
 
 BigNumber::BigNumber(size_t nbr)
 {
-	_sign = nbr >= 0;
+	_sign = true;
 
 	_vec = get_bl_vec(nbr);
 
@@ -104,9 +104,6 @@ BigNumber::BigNumber(string const& nbr)
 	_precision = _vec.size();
 }
 
-BigNumber::BigNumber(string&& nbr) : BigNumber(nbr)
-{}
-
 BigNumber::BigNumber(BigNumber const& obj)
 {
 	_sign		= obj._sign;
@@ -130,6 +127,8 @@ BigNumber	&BigNumber::operator=(BigNumber const& obj)
 	_sign		= obj._sign;
 	_precision	= obj._precision;
 	_vec		= obj._vec;
+
+	return *this;
 }
 
 BigNumber	&BigNumber::operator=(BigNumber&& obj)
@@ -137,6 +136,8 @@ BigNumber	&BigNumber::operator=(BigNumber&& obj)
 	_sign		= obj._sign;
 	_precision	= obj._precision;
 	_vec		= std::move(obj._vec);
+
+	return *this;
 }
 
 BigNumber	BigNumber::operator+() const
@@ -192,11 +193,15 @@ BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2)
 
 BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 {
+	(void)obj1;
+	(void)obj2;
 	return BigNumber();
 }
 
 BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2)
 {
+	(void)obj1;
+	(void)obj2;
 	return BigNumber();
 }
 
@@ -267,7 +272,7 @@ std::istream& operator>>(std::istream& in, BigNumber& num)
 	string input_str;
 	in >> input_str;
 
-	num = BigNumber(static_cast<string&&>(input_str));
+	num = BigNumber(input_str);
 
 	return (in);
 }
