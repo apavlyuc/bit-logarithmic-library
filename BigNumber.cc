@@ -3,8 +3,10 @@
 #include <iostream>
 #include <iomanip>
 
-#include <math.h>
+#include <cmath>
 #include <algorithm>
+#include <list>
+#include <iterator>
 
 using std::cout;
 using std::endl;
@@ -24,10 +26,9 @@ static bool				replace_same(vector<int>& vec);
 BigNumber::BigNumber(int nbr)
 {
 	_sign = nbr >= 0;
-
 	_vec = get_bl_vec(nbr);
-
 	_precision = _vec.size();
+	std::sort(_vec.begin(), _vec.end());
 }
 
 BigNumber::BigNumber(long long nbr)
@@ -48,6 +49,7 @@ BigNumber::BigNumber(size_t nbr)
 	_precision = _vec.size();
 }
 
+// TODO: fix << issues
 BigNumber::BigNumber(string const& nbr)
 {
 	if (nbr.empty())
@@ -186,9 +188,77 @@ BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 	return (ret);
 }
 
-BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2)
-{
-	return BigNumber();
+BigNumber	operator-(BigNumber const& lhs, BigNumber const& rhs) {
+	using Sign = BigNumber::Sign;
+
+	BigNumber difference;
+
+	// Handling corner cases
+	// Check if either of operands are zero
+	if (0 == lhs._precision || 0 == rhs._precision) {
+		if (0 == lhs._precision && 0 == rhs._precision) {
+			return difference;
+		}
+
+		difference = (0 == rhs._precision) ? lhs : rhs; 
+		difference._sign = (0 == rhs._precision)
+			? lhs._sign
+			: !rhs._sign;
+		return difference;
+	}
+
+	// Check signs
+	if (Sign::NEGATIVE == lhs._sign || Sign::NEGATIVE == rhs._sign) {
+		if (Sign::NEGATIVE == rhs._sign) {
+			// lhs - -rhs results in lhs + rhs
+			auto tmp = -rhs;
+			difference = lhs + tmp;
+		} else {
+			// -lhs - rhs (rhs could not be negative) results in -(lhs + rhs)
+			auto tmp = -lhs;
+			difference = tmp + rhs;
+			difference._sign = Sign::NEGATIVE;	
+		}
+		return difference;
+	}
+
+	BigNumber minuend, subtrahend;
+	minuend = std::max(lhs, rhs);
+	subtrahend = std::min(lhs, rhs);
+
+	for (int i = 0; i < subtrahend._precision; ++i) {
+		std::cout << "before find" << std::endl;
+		auto minuend_element =  std::find(minuend._vec.begin(),
+			minuend._vec.end(), subtrahend[i]);
+		std::cout << "after find" << std::endl;
+		// TODO: Talk about moving vector to set (upper/lower bound)
+		if (minuend._vec.end() == minuend_element) {
+			std::cout << "after find" << std::endl;
+			for (int i = minuend._vec.size() - 1; i >= 0; --i) {
+				if (minuend[i] > subtrahend[i]) {
+					minuend_element = minuend._vec.begin() + i;
+					std::list<int> els(minuend[i] - subtrahend[i]);
+					std::generate(els.begin(), els.end(),
+						[n = minuend[i] - 1]() mutable { return n--; });
+
+				 	std::insert_iterator<std::vector<int>>
+						inserter(minuend._vec, minuend_element);
+
+					std::copy(els.begin(), els.end(), inserter);
+					break;
+				}
+			}
+		}
+		minuend._vec.erase(minuend_element);
+	}
+
+	std::cout << "minuend._vec.size(): " << minuend._vec.size() << std::endl; 
+
+	// difference._vec = minuend._vec;
+	// difference._precision = minuend._vec.size();
+	// difference._sign = (lhs >= rhs);
+
+	return difference;
 }
 
 BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
@@ -231,6 +301,7 @@ bool	operator<(BigNumber const& obj1, BigNumber const& obj2)
 	return false;
 }
 
+// TODO: fix << issues
 std::ostream& operator<<(std::ostream& out, BigNumber const& obj)
 {
 	if (!obj._sign)
