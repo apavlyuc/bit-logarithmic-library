@@ -2,8 +2,7 @@
 
 #include <string>
 #include <vector>
-
-
+#include <algorithm>
 
 class BigNumber
 {
@@ -55,9 +54,9 @@ private:
 
 	template <typename T, T t>
 	void	initialize_from_number() {
-		_sign = nbr >= 0;
+		_sign = t >= 0;
 		_vec = get_bl_vec(t);
 		_precision = _vec.size();
-		std::sort(_vec.begin(), _vec.end());
+		std::sort(_vec.begin(), _vec.end(), std::greater<int>());
 	}
 };
