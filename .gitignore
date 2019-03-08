@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 main.cc
 a.out
 *.exe
+=======
+**/*.o
+program
+>>>>>>> lr1
