@@ -176,13 +176,13 @@ BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 
 	ret._vec.insert(ret._vec.end(), obj1._vec.begin(), obj1._vec.end());
 	ret._vec.insert(ret._vec.end(), obj2._vec.begin(), obj2._vec.end());
-	std::sort(ret._vec.begin(), ret._vec.end());
+	std::sort(ret._vec.begin(), ret._vec.end(), std::greater<int>());
 
 	while (replace_same(ret._vec));
 
 	ret._precision = ret._vec.size();
 
-	return (ret);
+	return std::move(ret);
 }
 
 BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2)
@@ -192,7 +192,25 @@ BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2)
 
 BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 {
-	return BigNumber();
+	BigNumber ret;
+
+	if (!obj1._sign && obj2._sign || obj1._sign && !obj2._sign)
+		ret._sign = false;
+
+	for (auto n1 : obj1._vec)
+	{
+		for (auto n2 : obj2._vec)
+		{
+			ret._vec.push_back(n1 + n2);
+		}
+	}
+	std::sort(ret._vec.begin(), ret._vec.end(), std::greater<int>());
+
+	while (replace_same(ret._vec));
+
+	ret._precision = ret._vec.size();
+
+	return std::move(ret);
 }
 
 BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2)
@@ -301,6 +319,9 @@ static vector<int>		get_bl_vec(T nbr)
 
 	size_t	bits = sizeof(nbr) * 8;
 
+	if (nbr < 0)
+		nbr = ~nbr + 1;
+
 	for (size_t i = 0; i < bits; ++i)
 	{
 		if (nbr & 1)
@@ -310,7 +331,7 @@ static vector<int>		get_bl_vec(T nbr)
 		nbr >>= 1;
 	}
 
-	std::sort(ret.begin(), ret.end());
+	std::sort(ret.begin(), ret.end(), std::greater<int>());
 
 	return ret;
 }
