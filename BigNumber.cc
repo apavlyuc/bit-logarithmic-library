@@ -317,7 +317,7 @@ bool	operator<(BigNumber const& obj1, BigNumber const& obj2)
 	return false;
 }
 
-// TODO: fix << issues
+// TODO: fix << issues | UPD: need BigNumber::operator/ and BigNumber::operator- to fix it
 std::ostream& operator<<(std::ostream& out, BigNumber const& obj)
 {
 	if (!obj._sign)
