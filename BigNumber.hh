@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+
+
 class BigNumber
 {
 public:
@@ -38,10 +40,24 @@ public:
 	inline int				get_precision() const { return _precision; }
 	inline bool				get_sign() const { return _sign; }
 	inline std::vector<int>	get_vec() const { return _vec; }
+
 private:
+	enum Sign {
+		POSITIVE = true,
+		NEGATIVE = false
+	};
+
 	static constexpr int	_LEN = 3;
 
 	std::vector<int>	_vec;
 	bool				_sign;
 	int					_precision;
+
+	template <typename T, T t>
+	void	initialize_from_number() {
+		_sign = nbr >= 0;
+		_vec = get_bl_vec(t);
+		_precision = _vec.size();
+		std::sort(_vec.begin(), _vec.end());
+	}
 };
