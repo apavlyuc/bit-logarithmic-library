@@ -23,7 +23,7 @@ int			main(int args_count, char **args)
 	std::cout << "lhs: "; lhs.print_info();
 	std::cout << "rhs: "; rhs.print_info();
 
-	BigNumber result = lhs - rhs;
+	BigNumber result = lhs * rhs;
 	std::cout << "result: "; result.print_info();
 	
 	return (0);

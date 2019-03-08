@@ -180,10 +180,6 @@ BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 	ret._vec.insert(ret._vec.end(), obj2._vec.begin(), obj2._vec.end());
 	std::sort(ret._vec.begin(), ret._vec.end(), std::greater<int>());
 
-	// cout << "before replace_same" << endl;
-	// std::for_each(ret._vec.begin(), ret._vec.end(), [](int it){ cout << it << ' '; });
-	// cout << endl;
-
 	while (replace_same(ret._vec));
 
 	ret._precision = ret._vec.size();
@@ -219,10 +215,9 @@ BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2) {
 		auto bigger = std::lower_bound(ret._vec.rbegin(), ret._vec.rend(), *it);
 		if (*bigger < *it)
 		{
-			cout << "bigger: " << *bigger << endl;
-			cout << "lowwer: " << *it << endl;
 			assert(*bigger < *it);
 		}
+
 		int upper_border = *bigger;
 		int lowwer_border = *it;
 		ret._vec.erase(std::next(bigger).base());
@@ -296,7 +291,7 @@ bool	operator<(BigNumber const& obj1, BigNumber const& obj2)
 	return false;
 }
 
-// TODO: fix << issues | UPD: need BigNumber::operator/ and BigNumber::operator- to fix it
+// TODO: fix << issues | UPD: need BigNumber::operator/
 std::ostream& operator<<(std::ostream& out, BigNumber const& obj)
 {
 	if (!obj._sign)
