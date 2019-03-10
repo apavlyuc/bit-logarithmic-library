@@ -30,6 +30,9 @@ public:
 	friend BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2);// need code
 
 	friend bool	operator<(BigNumber const& obj1, BigNumber const& obj2);
+	friend bool	operator>(BigNumber const& obj1, BigNumber const& obj2);
+	friend bool	operator>=(BigNumber const& obj1, BigNumber const& obj2);
+	friend bool	operator==(BigNumber const& obj1, BigNumber const& obj2);
 
 	friend std::ostream& operator<<(std::ostream& out, BigNumber const& num);
 	friend std::istream& operator>>(std::istream& in, BigNumber& num);

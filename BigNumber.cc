@@ -187,7 +187,8 @@ BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 	return std::move(ret);
 }
 
-BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2) {
+BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2)
+{
 	BigNumber ret;
 
 	if (!obj2._sign)
@@ -221,6 +222,9 @@ BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2) {
 		int upper_border = *bigger;
 		int lowwer_border = *it;
 		ret._vec.erase(std::next(bigger).base());
+
+		// cout << "upper: " << upper_border << endl;
+		// cout << "lower: " << lowwer_border << endl;
 
 		while (--upper_border >= lowwer_border)
 			ret._vec.push_back(upper_border);
@@ -260,8 +264,66 @@ BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 
 BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2)
 {
-	(void)obj1;
-	(void)obj2;
+	if (!obj2._precision)
+		throw "division by zero";
+
+	BigNumber ret;
+
+	if (!obj1._sign || !obj2._sign)
+		ret._sign = false;
+
+	BigNumber tmp = obj1;
+	BigNumber wtf = obj2;
+	
+	while (tmp >= BigNumber())
+	{
+		cout << "tmp" << endl;
+		tmp._sign = true;
+		wtf._sign = true;
+
+		int magic_number = tmp._vec[0] - wtf._vec[0];
+
+		BigNumber for_mult;
+		for_mult._precision = 1;
+		for_mult._vec.push_back(magic_number);
+		while (magic_number >= 0)
+		{
+			cout << "while >= 0" << endl;
+			for_mult._vec[0] = magic_number;
+			// cout << "middle calc" << endl;
+			// std::for_each(B._vec.begin(), B._vec.end(), [](int it){ cout << it << ' '; });
+			// cout << "for_each end" << endl;
+			BigNumber A = tmp;
+			A = A - wtf * for_mult;
+			if (A._sign == false)
+			{
+				cout << "magic_number: " << magic_number << endl;
+				magic_number--;
+			}
+			else
+			{
+				cout << "else" << endl;
+				std::for_each(A._vec.begin(), A._vec.end(), [](int it){ cout << it << ' '; });
+				cout << endl;
+				ret._vec.push_back(magic_number);
+				tmp = A;
+				break;
+			}
+		}
+		if (magic_number <= 0)
+		{
+			break;
+		}
+		//exit(1);
+	}
+	cout << "end?\n";
+
+	std::sort(ret._vec.begin(), ret._vec.end(), std::greater<int>());
+
+	while (replace_same(ret._vec));
+
+	ret._precision = ret._vec.size();
+	
 	return BigNumber();
 }
 
@@ -272,23 +334,69 @@ bool	operator<(BigNumber const& obj1, BigNumber const& obj2)
 	
 	if (obj1._sign && obj2._sign)
 	{
-		for (int i = 0; i < obj1._precision && i < obj2._precision; ++i)
+		int i;
+		for (i = 0; i < obj1._precision && i < obj2._precision; ++i)
 		{
+			if (obj1[i] == obj2[i])
+				continue;
+
 			if (obj1[i] < obj2[i])
 				return true;
+			return false;
 		}
+
+		if (i == obj1._precision)
+			return true;
 	}
 
 	if (!obj1._sign && !obj2._sign)
 	{
-		for (int i = 0; i < obj1._precision && i < obj2._precision; ++i)
+		int i;
+		for (i = 0; i < obj1._precision && i < obj2._precision; ++i)
 		{
+			if (obj1[i] == obj2[i])
+				continue;
+
 			if (obj1[i] > obj2[i])
 				return true;
+			return false;
 		}
+
+		if (i == obj2._precision)
+			return true;
 	}
 
 	return false;
+}
+
+bool	operator>(BigNumber const& obj1, BigNumber const& obj2)
+{
+	if (obj1 < obj2 || obj1 == obj2)
+		return false;
+
+	return true;
+}
+
+bool	operator>=(BigNumber const& obj1, BigNumber const& obj2)
+{
+	if (obj1 > obj2 || obj1 == obj2)
+		return true;
+
+	return false;
+}
+
+bool	operator==(BigNumber const& obj1, BigNumber const& obj2)
+{
+	if (obj1._precision != obj2._precision)
+		return false;
+
+	for (int i = 0; i < obj1._precision; ++i)
+	{
+		if (obj1[i] != obj2[i])
+			return false;
+	}
+
+	return true;
 }
 
 // TODO: fix << issues | UPD: need BigNumber::operator/
