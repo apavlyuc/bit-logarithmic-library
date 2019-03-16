@@ -243,7 +243,7 @@ BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 {
 	BigNumber ret;
 
-	if (!obj1._sign && obj2._sign || obj1._sign && !obj2._sign)
+	if ((!obj1._sign && obj2._sign) || (obj1._sign && !obj2._sign))
 		ret._sign = false;
 
 	for (auto n1 : obj1._vec)
@@ -262,111 +262,57 @@ BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 	return std::move(ret);
 }
 
-BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2)
+BigNumber	operator/(BigNumber const& lhs, BigNumber const& rhs)
 {
-	if (!obj2._precision)
+	if (!rhs._precision) {
 		throw "division by zero";
-
-	BigNumber ret;
-
-	if (!obj1._sign || !obj2._sign)
-		ret._sign = false;
-
-	BigNumber tmp = obj1;
-	BigNumber wtf = obj2;
-	
-	while (tmp >= BigNumber())
-	{
-		cout << "tmp" << endl;
-		tmp._sign = true;
-		wtf._sign = true;
-
-		int magic_number = tmp._vec[0] - wtf._vec[0];
-
-		BigNumber for_mult;
-		for_mult._precision = 1;
-		for_mult._vec.push_back(magic_number);
-		while (magic_number >= 0)
-		{
-			cout << "while >= 0" << endl;
-			for_mult._vec[0] = magic_number;
-			// cout << "middle calc" << endl;
-			// std::for_each(B._vec.begin(), B._vec.end(), [](int it){ cout << it << ' '; });
-			// cout << "for_each end" << endl;
-			BigNumber A = tmp;
-			A = A - wtf * for_mult;
-			if (A._sign == false)
-			{
-				cout << "magic_number: " << magic_number << endl;
-				magic_number--;
-			}
-			else
-			{
-				cout << "else" << endl;
-				std::for_each(A._vec.begin(), A._vec.end(), [](int it){ cout << it << ' '; });
-				cout << endl;
-				ret._vec.push_back(magic_number);
-				tmp = A;
-				break;
-			}
-		}
-		if (magic_number <= 0)
-		{
-			break;
-		}
-		//exit(1);
 	}
-	cout << "end?\n";
 
-	std::sort(ret._vec.begin(), ret._vec.end(), std::greater<int>());
-
-	while (replace_same(ret._vec));
-
-	ret._precision = ret._vec.size();
+	auto diff = 0;
+	if (lhs._precision && rhs._precision) {
+		diff = lhs[0] - rhs[0];
+	}
 	
-	return BigNumber();
+	auto zero = BigNumber();
+	auto lhs_mod = lhs < zero ? -lhs : lhs;
+	auto rhs_mod = rhs < zero ? -rhs : rhs;
+
+	BigNumber result;
+	while (lhs_mod > zero && diff >= 0) {
+		BigNumber cpy = rhs_mod;
+		std::for_each(cpy._vec.begin(), cpy._vec.end(),
+			[&diff](int& r) { r += diff; });
+
+		if (cpy > lhs_mod) {
+			--diff;
+		} else {
+			lhs_mod = lhs_mod - cpy;
+			result._vec.push_back(diff); result._precision++;
+			diff = lhs_mod[0] - rhs_mod[0];
+		}
+	}
+
+	result._sign = (!lhs._sign && !rhs._sign) || (lhs._sign && rhs._sign);
+	return result;
 }
 
-bool	operator<(BigNumber const& obj1, BigNumber const& obj2)
+bool	operator<(BigNumber const& lhs, BigNumber const& rhs)
 {
-	if (!obj1._sign && obj2._sign)
-		return true;
-	
-	if (obj1._sign && obj2._sign)
-	{
-		int i;
-		for (i = 0; i < obj1._precision && i < obj2._precision; ++i)
-		{
-			if (obj1[i] == obj2[i])
-				continue;
-
-			if (obj1[i] < obj2[i])
-				return true;
-			return false;
-		}
-
-		if (i == obj1._precision)
-			return true;
+	if (lhs._sign != rhs._sign) {
+		return lhs._sign < rhs._sign;
 	}
 
-	if (!obj1._sign && !obj2._sign)
-	{
-		int i;
-		for (i = 0; i < obj1._precision && i < obj2._precision; ++i)
-		{
-			if (obj1[i] == obj2[i])
-				continue;
+	auto size = std::min(lhs._precision, rhs._precision);
+	auto i = 0;
+	for (; i < size && lhs[i] == rhs[i]; ++i);
 
-			if (obj1[i] > obj2[i])
-				return true;
-			return false;
-		}
-
-		if (i == obj2._precision)
-			return true;
+	if (i == size) {
+		return lhs._sign
+			? lhs._precision < rhs._precision
+			: lhs._precision > rhs._precision;
 	}
 
-	return false;
+	return lhs._sign ? lhs[i] < rhs[i] : lhs[i] > rhs[i];
 }
 
 bool	operator>(BigNumber const& obj1, BigNumber const& obj2)
@@ -399,14 +345,13 @@ bool	operator==(BigNumber const& obj1, BigNumber const& obj2)
 	return true;
 }
 
-// TODO: fix << issues | UPD: need BigNumber::operator/
 std::ostream& operator<<(std::ostream& out, BigNumber const& obj)
 {
 	if (!obj._sign)
 		out << '-';
 
 	vector<int>	to_show;
-	{// to_show init
+	{
 		BigNumber tmp = obj;
 		BigNumber thousand(1000);
 

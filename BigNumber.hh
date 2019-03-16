@@ -27,9 +27,9 @@ public:
 	friend BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2);
 	friend BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2);// need code
 	friend BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2);
-	friend BigNumber	operator/(BigNumber const& obj1, BigNumber const& obj2);// need code
+	friend BigNumber	operator/(BigNumber const& lhs, BigNumber const& rhs);// need code
 
-	friend bool	operator<(BigNumber const& obj1, BigNumber const& obj2);
+	friend bool	operator<(BigNumber const& lhs, BigNumber const& rhs);
 	friend bool	operator>(BigNumber const& obj1, BigNumber const& obj2);
 	friend bool	operator>=(BigNumber const& obj1, BigNumber const& obj2);
 	friend bool	operator==(BigNumber const& obj1, BigNumber const& obj2);
