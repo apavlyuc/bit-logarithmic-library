@@ -13,8 +13,8 @@ using std::vector;
 
 int			main(int args_count, char **args)
 {
-	Flags obj;
-	obj.read_flags(args_count, args);
+	Flags obj(args_count, args);
+	obj.read_flags();
 
 	if (obj.tests)
 	{

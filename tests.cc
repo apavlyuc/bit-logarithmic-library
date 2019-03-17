@@ -8,11 +8,11 @@ using std::cout;
 using std::endl;
 using std::string;
 
-void 	Flags::read_flags(int ac, char **av)
+void 	Flags::read_flags()
 {
-	for (int i = 1; i < ac; ++i)
+	for (int i = 1; i < _ac; ++i)
 	{
-		string tmp = av[i];
+		string tmp = _av[i];
 
 		if (tmp.find("--") != string::npos)
 		{

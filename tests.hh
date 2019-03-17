@@ -2,9 +2,14 @@
 
 struct Flags
 {
-	bool tests;
+	Flags(int ac, char **av) : _ac(ac), _av(av) {}
 
-	void	read_flags(int ac, char **av);
+	void	read_flags();
+
+	bool tests;
+private:
+	int _ac;
+	char **_av;
 };
 
 
