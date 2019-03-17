@@ -165,6 +165,29 @@ BigNumber::operator bool() const
 	return _precision;
 }
 
+BigNumber			&BigNumber::operator+=(BigNumber const&obj)
+{
+	*this = *this + obj;
+	return *this;
+}
+
+BigNumber			&BigNumber::operator-=(BigNumber const&obj)
+{
+	*this = *this - obj;
+	return *this;
+}
+
+BigNumber			&BigNumber::operator*=(BigNumber const&obj)
+{
+	*this = *this * obj;
+	return *this;
+}
+BigNumber			&BigNumber::operator/=(BigNumber const&obj)
+{
+	*this = *this / obj;
+	return *this;
+}
+
 BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 {
 	BigNumber ret;

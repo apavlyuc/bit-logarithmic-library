@@ -25,6 +25,11 @@ public:
 
 	operator bool() const;
 
+	BigNumber			&operator+=(BigNumber const&obj);
+	BigNumber			&operator-=(BigNumber const&obj);
+	BigNumber			&operator*=(BigNumber const&obj);
+	BigNumber			&operator/=(BigNumber const&obj);
+
 	friend BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2);
 	friend BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2);
 	friend BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2);
