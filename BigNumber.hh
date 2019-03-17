@@ -10,8 +10,9 @@ public:
 	BigNumber(int nbr = 0);
 	BigNumber(long long nbr);
 	BigNumber(size_t nbr);
+	BigNumber(char *nbr) : BigNumber(std::string(nbr)) {};
 	BigNumber(std::string const& nbr);
-	BigNumber(std::string&& nbr);
+	BigNumber(std::string&& nbr) : BigNumber(nbr) {};
 	BigNumber(BigNumber const& obj);
 	BigNumber(BigNumber&& obj);
 
@@ -25,9 +26,9 @@ public:
 	operator bool() const;
 
 	friend BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2);
-	friend BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2);// need code
+	friend BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2);
 	friend BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2);
-	friend BigNumber	operator/(BigNumber const& lhs, BigNumber const& rhs);// need code
+	friend BigNumber	operator/(BigNumber const& lhs, BigNumber const& rhs);
 
 	friend bool	operator<(BigNumber const& lhs, BigNumber const& rhs);
 	friend bool	operator>(BigNumber const& obj1, BigNumber const& obj2);
@@ -54,12 +55,4 @@ private:
 	std::vector<int>	_vec;
 	bool				_sign;
 	int					_precision;
-
-	template <typename T, T t>
-	void	initialize_from_number() {
-		_sign = t >= 0;
-		_vec = get_bl_vec(t);
-		_precision = _vec.size();
-		std::sort(_vec.begin(), _vec.end(), std::greater<int>());
-	}
 };

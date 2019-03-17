@@ -6,7 +6,7 @@ struct Flags
 
 	void	read_flags();
 
-	bool tests;
+	bool tests = false;
 private:
 	int _ac;
 	char **_av;
