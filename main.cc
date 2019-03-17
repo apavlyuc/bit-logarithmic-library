@@ -1,4 +1,5 @@
 #include "BigNumber.hh"
+#include "tests.hh"
 
 #include <iostream>
 #include <string>
@@ -12,6 +13,17 @@ using std::vector;
 
 int			main(int args_count, char **args)
 {
+	Flags obj;
+	obj.read_flags(args_count, args);
+
+	if (obj.tests)
+	{
+		tests_for_plus();
+		tests_for_minus();
+		tests_for_mult();
+		tests_for_div();
+	}
+
 	if (3 != args_count) {
 		std::cout << "usage: " << args[0] << " arg1 arg2" << std::endl;
 		return 1;
@@ -24,6 +36,6 @@ int			main(int args_count, char **args)
 	std::cout << "rhs:\n"; rhs.print_info(); std::cout << "\n";
 
 	// std::cout << "lhs - rhs: " << (lhs < rhs ? "yes" : "no") << "\n";
-	std::cout << "lhs / rhs:\n"; (lhs / rhs).print_info();	
+	std::cout << "lhs / rhs:\n"; (lhs / rhs).print_info();
 	return 0;
 }

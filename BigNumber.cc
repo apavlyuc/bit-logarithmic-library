@@ -265,7 +265,7 @@ BigNumber	operator*(BigNumber const& obj1, BigNumber const& obj2)
 BigNumber	operator/(BigNumber const& lhs, BigNumber const& rhs)
 {
 	if (!rhs._precision) {
-		throw "division by zero";
+		throw string("division by zero");
 	}
 
 	auto diff = 0;
