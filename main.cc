@@ -24,20 +24,10 @@ int			main(int args_count, char **args)
 		tests_for_div();
 	}
 
-	if (3 != args_count) {
-		std::cout << "usage: " << args[0] << " arg1 arg2" << std::endl;
-		return 1;
-	}
+	BigNumber nbr;
 
-	BigNumber lhs, rhs;
-	lhs = args[1]; rhs = args[2];
+	cin >> nbr;
+	cout << nbr << endl;
 
-	lhs.print_info();
-
-	// std::cout << "lhs:\n"; lhs.print_info(); std::cout << "\n";
-	// std::cout << "rhs:\n"; rhs.print_info(); std::cout << "\n";
-
-	// std::cout << "lhs - rhs: " << (lhs < rhs ? "yes" : "no") << "\n";
-	// std::cout << "lhs / rhs:\n"; (lhs / rhs).print_info();
 	return 0;
 }

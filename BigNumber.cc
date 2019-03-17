@@ -165,24 +165,25 @@ BigNumber::operator bool() const
 	return _precision;
 }
 
-BigNumber			&BigNumber::operator+=(BigNumber const&obj)
+BigNumber	&BigNumber::operator+=(BigNumber const&obj)
 {
 	*this = *this + obj;
 	return *this;
 }
 
-BigNumber			&BigNumber::operator-=(BigNumber const&obj)
+BigNumber	&BigNumber::operator-=(BigNumber const&obj)
 {
 	*this = *this - obj;
 	return *this;
 }
 
-BigNumber			&BigNumber::operator*=(BigNumber const&obj)
+BigNumber	&BigNumber::operator*=(BigNumber const&obj)
 {
 	*this = *this * obj;
 	return *this;
 }
-BigNumber			&BigNumber::operator/=(BigNumber const&obj)
+
+BigNumber	&BigNumber::operator/=(BigNumber const&obj)
 {
 	*this = *this / obj;
 	return *this;
@@ -375,31 +376,33 @@ std::ostream& operator<<(std::ostream& out, BigNumber const& obj)
 
 	vector<int>	to_show;
 	{
-		BigNumber tmp = obj;
+		BigNumber tmp = obj > BigNumber() ? obj : -obj;
 		BigNumber thousand(1000);
 
-		if (!tmp)
-			to_show.push_back(0);
-		while (tmp)
+		while (tmp > thousand)
 		{
 			BigNumber div_res = tmp / thousand;
 
-			int num = get_int_from_bl(tmp - div_res);
+			int num = get_int_from_bl(tmp - div_res * thousand);
 			to_show.push_back(num);
 
-			tmp = div_res;
+			tmp /= thousand;
 		}
+		to_show.push_back(get_int_from_bl(tmp));
 		std::reverse(to_show.begin(), to_show.end());
 	}
 
 	size_t size = to_show.size();
 
-	out << obj._vec[0];
-	for (size_t i = 1; i < size; ++i)
+	out << to_show[0];
+	size_t i = 1;
+	for (; i < size - 1; ++i)
 	{
 		out << std::setfill('0') << std::setw(BigNumber::_LEN);
-		out << to_show[i];
+		out << std::to_string(to_show[i]);
 	}
+	if (i < size)
+		out << std::setfill('0') << std::setw(BigNumber::_LEN) << to_show[i];
 
 	return (out);
 }
