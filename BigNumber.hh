@@ -10,7 +10,7 @@ public:
 	BigNumber(int nbr = 0);
 	BigNumber(long long nbr);
 	BigNumber(size_t nbr);
-	BigNumber(char *nbr) : BigNumber(std::string(nbr)) {};
+	BigNumber(char const* nbr) : BigNumber(std::string(nbr)) {};
 	BigNumber(std::string const& nbr);
 	BigNumber(std::string&& nbr) : BigNumber(nbr) {};
 	BigNumber(BigNumber const& obj);
@@ -29,6 +29,10 @@ public:
 	BigNumber			&operator-=(BigNumber const&obj);
 	BigNumber			&operator*=(BigNumber const&obj);
 	BigNumber			&operator/=(BigNumber const&obj);
+	BigNumber			&operator++();
+	BigNumber			&operator--();
+	BigNumber			operator++(int);
+	BigNumber			operator--(int);
 
 	friend BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2);
 	friend BigNumber	operator-(BigNumber const& obj1, BigNumber const& obj2);
@@ -62,3 +66,5 @@ private:
 	bool				_sign;
 	int					_precision;
 };
+
+BigNumber	sqrt(BigNumber const& nbr);

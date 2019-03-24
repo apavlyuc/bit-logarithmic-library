@@ -189,6 +189,38 @@ BigNumber	&BigNumber::operator/=(BigNumber const&obj)
 	return *this;
 }
 
+BigNumber	&BigNumber::operator++()
+{
+	*this = *this + BigNumber(1);
+
+	return *this;
+}
+
+BigNumber	&BigNumber::operator--()
+{
+	*this = *this - BigNumber(1);
+
+	return *this;
+}
+
+BigNumber	BigNumber::operator++(int)
+{
+	BigNumber ret(*this);
+
+	*this = *this + BigNumber(1);
+
+	return std::move(ret);
+}
+
+BigNumber	BigNumber::operator--(int)
+{
+	BigNumber ret(*this);
+
+	*this = *this - BigNumber(1);
+
+	return std::move(ret);
+}
+
 BigNumber	operator+(BigNumber const& obj1, BigNumber const& obj2)
 {
 	BigNumber ret;
@@ -503,4 +535,42 @@ static bool				replace_same(vector<int>& vec)
 		}
 	}
 	return false;
+}
+
+BigNumber	sqrt(BigNumber const& nbr)
+{
+	if (nbr <= BigNumber(1))
+		return std::move(nbr);
+
+	BigNumber ret = nbr / BigNumber(2);
+	BigNumber min(1), max(ret);
+	while (true)
+	{
+		BigNumber tmp = ret * ret;
+		BigNumber step = (max - min) / BigNumber(2);
+		bool is_lower = tmp < nbr;
+
+		// cout << "max = " << max << endl;
+		// cout << "min = " << min << endl;
+		// cout << "step = " << step << endl;
+		// cout << "is_lower = " << is_lower << endl;
+
+		if (tmp == nbr)
+			return std::move(ret);
+		if (step == BigNumber(0))
+			return std::move((is_lower ? ret : min));
+
+		if (is_lower)
+		{
+			min = ret;
+			ret += step;
+		}
+		else
+		{
+			max = ret;
+			ret -= step;
+		}
+	}
+
+	return std::move(ret);
 }
