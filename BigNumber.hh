@@ -37,6 +37,7 @@ public:
 
 	friend bool	operator<(BigNumber const& lhs, BigNumber const& rhs);
 	friend bool	operator>(BigNumber const& obj1, BigNumber const& obj2);
+	friend bool	operator<=(BigNumber const& obj1, BigNumber const& obj2);
 	friend bool	operator>=(BigNumber const& obj1, BigNumber const& obj2);
 	friend bool	operator==(BigNumber const& obj1, BigNumber const& obj2);
 

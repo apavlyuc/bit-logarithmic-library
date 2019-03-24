@@ -355,6 +355,14 @@ bool	operator>=(BigNumber const& obj1, BigNumber const& obj2)
 	return false;
 }
 
+bool	operator<=(BigNumber const& obj1, BigNumber const& obj2)
+{
+	if (obj1 < obj2 || obj1 == obj2)
+		return true;
+
+	return false;
+}
+
 bool	operator==(BigNumber const& obj1, BigNumber const& obj2)
 {
 	if (obj1._precision != obj2._precision)
